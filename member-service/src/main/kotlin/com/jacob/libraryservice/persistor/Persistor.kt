@@ -1,6 +1,6 @@
 package com.jacob.libraryservice.persistor
 
-import com.jacob.libraryservice.envelope.CreateMemberEvent
+import com.jacob.libraryservice.domain.envelope.CreateMemberEvent
 import reactor.core.publisher.Mono
 
 interface Persistor<T> {

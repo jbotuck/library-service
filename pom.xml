@@ -6,7 +6,11 @@
     <groupId>com.jacob</groupId>
     <artifactId>library-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <modules>
+        <module>member-service</module>
+        <module>domain</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>library-service</name>
     <description>Demo project for Spring Boot</description>
@@ -68,10 +72,6 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <configuration>
@@ -92,6 +92,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

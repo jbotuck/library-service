@@ -1,4 +1,4 @@
-package com.jacob.libraryservice.envelope
+package com.jacob.libraryservice.domain.envelope
 
 import com.jacob.libraryservice.domain.Member
 

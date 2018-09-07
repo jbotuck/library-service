@@ -1,7 +1,7 @@
 package com.jacob.libraryservice.persistor.impl
 
 import com.jacob.libraryservice.domain.Member
-import com.jacob.libraryservice.envelope.CreateMemberEvent
+import com.jacob.libraryservice.domain.envelope.CreateMemberEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

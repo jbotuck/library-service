@@ -1,8 +1,8 @@
 package com.jacob.libraryservice.controller
 
 import com.jacob.libraryservice.domain.Member
-import com.jacob.libraryservice.envelope.CreateMemberEvent
-import com.jacob.libraryservice.envelope.Header
+import com.jacob.libraryservice.domain.envelope.CreateMemberEvent
+import com.jacob.libraryservice.domain.envelope.Header
 import com.jacob.libraryservice.persistor.Persistor
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
