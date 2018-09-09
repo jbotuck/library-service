@@ -1,10 +1,9 @@
-package com.jacob.libraryservice.persistor.impl
+package com.jacob.libraryservice.member.service.persistor
 
 import com.jacob.libraryservice.domain.Member
-import com.jacob.libraryservice.domain.envelope.CreateMemberEvent
 import com.jacob.libraryservice.domain.envelope.Event
 import com.jacob.libraryservice.domain.envelope.Header
-import com.jacob.libraryservice.persistor.Persistor
+import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
@@ -14,15 +13,18 @@ import java.time.Instant
 import java.util.*
 
 @Component
-class MemberPersistor(val kafkaTemplate: KafkaTemplate<UUID, Event>) : Persistor<Member> {
+class MemberPersistor(val kafkaTemplate: KafkaTemplate<String, Event<Member>>) {
     companion object {
         @JvmStatic
         private val logger = getLogger(MemberPersistor::class.java)
     }
 
-    override fun persist(entity: Member): Mono<CreateMemberEvent> {
-        return CreateMemberEvent(Header(UUID.randomUUID(), Instant.now()), entity)
-                .let { kafkaTemplate.sendDefault(entity.id, it).completable().toMono().ignoreElement().then(Mono.just(it)) }
+    fun persist(entity: Member): Mono<UpsertMemberEvent> {
+        return UpsertMemberEvent(Header(UUID.randomUUID(), Instant.now()), entity)
+                .let {
+                    kafkaTemplate.sendDefault(entity.id.toString(), it)
+                            .completable().toMono().ignoreElement().then(Mono.just(it))
+                }
 
     }
 }

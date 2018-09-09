@@ -1,7 +1,7 @@
-package com.jacob.libraryservice.persistor.impl
+package com.jacob.libraryservice.member.service.persistor
 
 import com.jacob.libraryservice.domain.Member
-import com.jacob.libraryservice.domain.envelope.CreateMemberEvent
+import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,14 +18,14 @@ import java.util.*
 @RunWith(MockitoJUnitRunner::class)
 class MemberPersistorTest {
     @Mock
-    lateinit var kafkaTemplate: KafkaTemplate<UUID, CreateMemberEvent>
+    lateinit var kafkaTemplate: KafkaTemplate<UUID, UpsertMemberEvent>
     @InjectMocks
     lateinit var memberPersistor: MemberPersistor
 
     @Test
     fun persist() {
         val member = Member(UUID.randomUUID(), "joe")
-        given(kafkaTemplate.sendDefault(ArgumentMatchers.any(), argThat { it.member == member })).willReturn(AsyncResult(null))
-        assertThat(memberPersistor.persist(member).block()?.member).isEqualTo(member)
+        given(kafkaTemplate.sendDefault(ArgumentMatchers.any(), argThat { it.newMemberData == member })).willReturn(AsyncResult(null))
+        assertThat(memberPersistor.persist(member).block()?.newMemberData).isEqualTo(member)
     }
 }

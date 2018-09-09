@@ -1,11 +1,11 @@
-package com.jacob.libraryservice
+package com.jacob.libraryservice.member.service
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class LibraryServiceApplication
+class MemberServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<LibraryServiceApplication>(*args)
+    runApplication<MemberServiceApplication>(*args)
 }

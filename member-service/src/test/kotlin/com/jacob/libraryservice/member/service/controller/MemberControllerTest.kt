@@ -1,9 +1,9 @@
-package com.jacob.libraryservice.controller
+package com.jacob.libraryservice.member.service.controller
 
 import com.jacob.libraryservice.domain.Member
-import com.jacob.libraryservice.domain.envelope.CreateMemberEvent
 import com.jacob.libraryservice.domain.envelope.Header
-import com.jacob.libraryservice.persistor.Persistor
+import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.member.service.persistor.MemberPersistor
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,20 +23,20 @@ import java.util.*
 @WebFluxTest(MemberController::class)
 class MemberControllerTest {
     @Autowired
-    lateinit var client: WebTestClient
+    private lateinit var client: WebTestClient
     @MockBean
-    lateinit var persistor: Persistor<Member>
-    var dummyMember = Member(null, null)
+    private lateinit var persistor: MemberPersistor
+    private var dummyMember = Member(null, null)
 
     @Test
     fun persist() {
         val memberToCreate = Member(null, "joe")
-        val returned = CreateMemberEvent(Header(UUID.randomUUID(), Instant.now()), Member(UUID.randomUUID(), "foo"))
+        val returned = UpsertMemberEvent(Header(UUID.randomUUID(), Instant.now()), Member(UUID.randomUUID(), "foo"))
         given(persistor.persist(ArgumentMatchers.argThat { it?.name == "joe" }
                 ?: dummyMember)).willReturn(returned.toMono())
         client.post().uri("/member").accept(MediaType.APPLICATION_JSON_UTF8).syncBody(memberToCreate)
                 .exchange()
-                .expectBody<CreateMemberEvent>(CreateMemberEvent::class.java).returnResult().apply {
+                .expectBody<UpsertMemberEvent>(UpsertMemberEvent::class.java).returnResult().apply {
                     assertThat(this.responseBody).isEqualTo(returned)
                 }
     }
