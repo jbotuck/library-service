@@ -4,6 +4,7 @@ import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.Header
 import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
 import com.jacob.libraryservice.member.service.persistor.MemberPersistor
+import com.jacob.libraryservice.member.service.repository.MemberRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +27,8 @@ class MemberControllerTest {
     private lateinit var client: WebTestClient
     @MockBean
     private lateinit var persistor: MemberPersistor
+    @MockBean
+    private lateinit var memberRepository: MemberRepository
     private var dummyMember = Member(null, null)
 
     @Test
