@@ -39,9 +39,9 @@ class StateManagerApplicationNoSpringTest {
         })
         Assertions.assertThat(topologyTestDriver.allStateStores.size).isEqualTo(1)
         val factory: ConsumerRecordFactory<String, UpsertMemberEvent> = ConsumerRecordFactory(StringSerializer(), JsonSerializer<UpsertMemberEvent>(objectMapper))
-        val newMemberData = Member(UUID.randomUUID(), "joe")
+        val newMemberData = Member("joe").copyWithGeneratedId()
         topologyTestDriver.pipeInput(factory.create("MEMBER.EVENT", newMemberData.id.toString(), UpsertMemberEvent(Header(), newMemberData)))
-        val outputRecord: ProducerRecord<String, Member> = topologyTestDriver.readOutput("MEMBER", StringDeserializer(), JsonDeserializer<Member>(Member::class.java, objectMapper))
+        val outputRecord: ProducerRecord<String, Member> = topologyTestDriver.readOutput("MEMBER.TABLE", StringDeserializer(), JsonDeserializer<Member>(Member::class.java, objectMapper))
         OutputVerifier.compareKeyValue(outputRecord, newMemberData.id.toString(), newMemberData) // throws AssertionError if key or value does not match
     }
 }

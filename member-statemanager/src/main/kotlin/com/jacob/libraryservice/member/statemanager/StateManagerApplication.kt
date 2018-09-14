@@ -43,7 +43,10 @@ class StateManagerApplication(@Value("\${brokerAddresses:localhost:9092}") val b
     @Bean
     fun memberTable(eventStream: KStream<String, MemberEvent>): KTable<String, Member> {
         return eventStream.groupByKey().aggregate({ null }, { _, event, member -> event.update(member) }, Materialized.with(null, memberSerde))
-                .apply { toStream().to("MEMBER", Produced.with(null, memberSerde)) }
+                .apply {
+                    toStream().through("MEMBER.TABLE", Produced.with(null, memberSerde))
+                            .to("MEMBER.VIEW.SEARCH", Produced.with(null, memberSerde))
+                }
     }
 }
 

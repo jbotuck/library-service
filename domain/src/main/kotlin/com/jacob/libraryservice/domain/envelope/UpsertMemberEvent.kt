@@ -4,7 +4,7 @@ import com.jacob.libraryservice.domain.Member
 
 class UpsertMemberEvent(override val header: Header, val newMemberData: Member) : MemberEvent {
     override fun update(existing: Member?): Member {
-        return existing?.copy(name = newMemberData.name?.run { this } ?: existing.name) ?: newMemberData
+        return existing?.handleEvent(this) ?: newMemberData
     }
 
     override fun equals(other: Any?): Boolean {

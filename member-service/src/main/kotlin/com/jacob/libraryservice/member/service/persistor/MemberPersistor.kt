@@ -23,7 +23,7 @@ class MemberPersistor(val kafkaTemplate: KafkaTemplate<String, Event<Member>>) {
         return UpsertMemberEvent(Header(UUID.randomUUID(), Instant.now()), entity)
                 .let {
                     kafkaTemplate.sendDefault(entity.id.toString(), it)
-                            .completable().toMono().ignoreElement().then(Mono.just(it))
+                            .completable().toMono().ignoreElement().then(it.toMono())
                 }
 
     }

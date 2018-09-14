@@ -24,7 +24,7 @@ class MemberPersistorTest {
 
     @Test
     fun persist() {
-        val member = Member(UUID.randomUUID(), "joe")
+        val member = Member("joe").copyWithGeneratedId()
         given(kafkaTemplate.sendDefault(ArgumentMatchers.any(), argThat { it.newMemberData == member })).willReturn(AsyncResult(null))
         assertThat(memberPersistor.persist(member).block()?.newMemberData).isEqualTo(member)
     }
