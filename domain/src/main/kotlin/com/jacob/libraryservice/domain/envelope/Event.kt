@@ -5,5 +5,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 interface Event<T> {
     val header: Header
-    fun update(existing: T?): T
+    fun process(existing: T?): T
 }

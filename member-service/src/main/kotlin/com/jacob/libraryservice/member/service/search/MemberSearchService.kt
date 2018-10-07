@@ -1,6 +1,6 @@
 package com.jacob.libraryservice.member.service.search
 
-import com.jacob.libraryservice.domain.Member
+import com.jacob.libraryservice.domain.member.Member
 import io.searchbox.client.JestClient
 import io.searchbox.client.JestResult
 import io.searchbox.client.JestResultHandler
@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
-import java.lang.Exception
 import java.util.*
 
 @Component

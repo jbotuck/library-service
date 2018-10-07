@@ -1,7 +1,7 @@
 package com.jacob.libraryservice.member.service.controller
 
-import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.member.Member
 import com.jacob.libraryservice.member.service.persistor.MemberPersistor
 import com.jacob.libraryservice.member.service.search.MemberSearchService
 import org.springframework.web.bind.annotation.*
@@ -18,13 +18,13 @@ class MemberController(val memberPersistor: MemberPersistor, val memberSearchSer
 
     @PostMapping
     fun create(@RequestBody member: Member): Mono<UpsertMemberEvent> {
-        return member.copyWithGeneratedId().let {
+        return member.copy(id = UUID.randomUUID()).let {
             memberPersistor.persist(it)
         }
     }
 
     @PatchMapping("/{id}")
     fun update(@PathVariable("id") id: UUID, @RequestBody member: Member): Mono<UpsertMemberEvent> {
-        return member.also { it.id = id }.let { memberPersistor.persist(it) }
+        return member.copy(id = id).let { memberPersistor.persist(it) }
     }
 }

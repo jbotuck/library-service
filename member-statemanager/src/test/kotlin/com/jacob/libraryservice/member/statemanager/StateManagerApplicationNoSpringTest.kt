@@ -3,9 +3,10 @@ package com.jacob.libraryservice.member.statemanager
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.Header
 import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.member.Member
+import com.jacob.libraryservice.domain.member.MemberData
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -39,7 +40,7 @@ class StateManagerApplicationNoSpringTest {
         })
         Assertions.assertThat(topologyTestDriver.allStateStores.size).isEqualTo(1)
         val factory: ConsumerRecordFactory<String, UpsertMemberEvent> = ConsumerRecordFactory(StringSerializer(), JsonSerializer<UpsertMemberEvent>(objectMapper))
-        val newMemberData = Member("joe").copyWithGeneratedId()
+        val newMemberData = Member(UUID.randomUUID(), MemberData("joe"))
         topologyTestDriver.pipeInput(factory.create("MEMBER.EVENT", newMemberData.id.toString(), UpsertMemberEvent(Header(), newMemberData)))
         val outputRecord: ProducerRecord<String, Member> = topologyTestDriver.readOutput("MEMBER.TABLE", StringDeserializer(), JsonDeserializer<Member>(Member::class.java, objectMapper))
         OutputVerifier.compareKeyValue(outputRecord, newMemberData.id.toString(), newMemberData) // throws AssertionError if key or value does not match

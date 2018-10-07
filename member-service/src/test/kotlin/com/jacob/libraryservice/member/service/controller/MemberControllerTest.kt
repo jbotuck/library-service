@@ -1,8 +1,9 @@
 package com.jacob.libraryservice.member.service.controller
 
-import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.Header
 import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.member.Member
+import com.jacob.libraryservice.domain.member.MemberData
 import com.jacob.libraryservice.member.service.persistor.MemberPersistor
 import com.jacob.libraryservice.member.service.search.MemberSearchService
 import org.assertj.core.api.Assertions.assertThat
@@ -32,33 +33,30 @@ class MemberControllerTest {
     private lateinit var persistor: MemberPersistor
     @MockBean
     private lateinit var memberRepository: MemberSearchService
-    private var dummyMember = Member(null, null)
+    private var dummyMember = Member(memberData = MemberData())
 
     @Test
     fun persist() {
-        val memberToCreate = Member("joe", null)
-        val returned = UpsertMemberEvent(Header(UUID.randomUUID(), Instant.now()), Member("foo", null).copyWithGeneratedId())
-        given(persistor.persist(ArgumentMatchers.argThat { it?.name == "joe" }
+        val memberToCreate = Member(memberData = MemberData("joe"))
+        val returned = UpsertMemberEvent(Header(UUID.randomUUID(), Instant.now()), Member(UUID.randomUUID(), MemberData("foo")))
+        given(persistor.persist(ArgumentMatchers.argThat { it?.memberData == memberToCreate.memberData }
                 ?: dummyMember)).willReturn(returned.toMono())
         client.post().uri("/member").accept(MediaType.APPLICATION_JSON_UTF8).syncBody(memberToCreate)
                 .exchange()
                 .expectBody<UpsertMemberEvent>(UpsertMemberEvent::class.java).returnResult().apply {
                     assertThat(this.responseBody).isEqualTo(returned)
-                    assertThat(this.responseBody?.newMemberData?.id).isEqualTo(returned.newMemberData.id)
-
                 }
     }
 
     @Test
     fun getOne() {
         val arg1 = UUID.randomUUID()
-        val expected = Member("foo", null).copyWithGeneratedId()
+        val expected = Member(UUID.randomUUID(), MemberData("foo"))
         given(memberRepository.getOne(arg1)).willReturn(Mono.just(expected))
         client.get().uri("/member/{id}", arg1)
                 .exchange()
                 .expectBody<Member>(Member::class.java).returnResult().apply {
                     assertThat(this.responseBody).isEqualTo(expected)
-                    assertThat(this.responseBody?.id).isEqualTo(expected.id)
                 }
     }
 

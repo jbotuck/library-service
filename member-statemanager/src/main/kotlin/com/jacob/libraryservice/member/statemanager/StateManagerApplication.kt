@@ -1,8 +1,8 @@
 package com.jacob.libraryservice.member.statemanager
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.MemberEvent
+import com.jacob.libraryservice.domain.member.Member
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.Consumed
 import org.apache.kafka.streams.StreamsBuilder
@@ -42,7 +42,7 @@ class StateManagerApplication(@Value("\${brokerAddresses:localhost:9092}") val b
 
     @Bean
     fun memberTable(eventStream: KStream<String, MemberEvent>): KTable<String, Member> {
-        return eventStream.groupByKey().aggregate({ null }, { _, event, member -> event.update(member) }, Materialized.with(null, memberSerde))
+        return eventStream.groupByKey().aggregate({ null }, { _, event, member -> event.process(member) }, Materialized.with(null, memberSerde))
                 .apply {
                     toStream().through("MEMBER.TABLE", Produced.with(null, memberSerde))
                             .to("MEMBER.VIEW.SEARCH", Produced.with(null, memberSerde))

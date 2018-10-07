@@ -1,15 +1,14 @@
 package com.jacob.libraryservice.domain.envelope
 
-import com.jacob.libraryservice.domain.Member
+import com.jacob.libraryservice.domain.member.Member
+import com.jacob.libraryservice.domain.member.MemberData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class UpsertMemberEventTest {
     @Test
     fun testUpdate() {
-        assertThat(UpsertMemberEvent(Header(), Member("joe").copyWithGeneratedId())
-                .update(Member("jon", "j@aol.com").copyWithGeneratedId())).isEqualTo(Member("joe", "j@aol.com"))
-        assertThat(UpsertMemberEvent(Header(), Member(null).copyWithGeneratedId())
-                .update(Member("jon").copyWithGeneratedId()).name).isEqualTo("jon")
+        assertThat(UpsertMemberEvent(Header(), Member(memberData = MemberData("joe")))
+                .process(Member(memberData = MemberData("jon", "j@aol.com"))).memberData).isEqualTo(MemberData("joe", "j@aol.com"))
     }
 }

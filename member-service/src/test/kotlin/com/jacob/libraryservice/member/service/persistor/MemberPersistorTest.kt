@@ -1,7 +1,8 @@
 package com.jacob.libraryservice.member.service.persistor
 
-import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.member.Member
+import com.jacob.libraryservice.domain.member.MemberData
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +25,7 @@ class MemberPersistorTest {
 
     @Test
     fun persist() {
-        val member = Member("joe").copyWithGeneratedId()
+        val member = Member(UUID.randomUUID(), MemberData("joe"))
         given(kafkaTemplate.sendDefault(ArgumentMatchers.any(), argThat { it.newMemberData == member })).willReturn(AsyncResult(null))
         assertThat(memberPersistor.persist(member).block()?.newMemberData).isEqualTo(member)
     }

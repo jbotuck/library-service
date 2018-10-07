@@ -1,9 +1,9 @@
 package com.jacob.libraryservice.member.service.persistor
 
-import com.jacob.libraryservice.domain.Member
 import com.jacob.libraryservice.domain.envelope.Event
 import com.jacob.libraryservice.domain.envelope.Header
 import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.member.Member
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
