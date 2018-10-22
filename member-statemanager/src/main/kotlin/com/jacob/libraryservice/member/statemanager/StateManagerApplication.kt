@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.Consumed
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.StreamsConfig
+import org.apache.kafka.streams.errors.LogAndFailExceptionHandler
 import org.apache.kafka.streams.kstream.KStream
 import org.apache.kafka.streams.kstream.KTable
 import org.apache.kafka.streams.kstream.Materialized
@@ -32,6 +33,7 @@ class StateManagerApplication(@Value("\${brokerAddresses:localhost:9092}") val b
             put(StreamsConfig.APPLICATION_ID_CONFIG, "member")
             put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokerAddresses)
             put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde::class.java)
+            put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndFailExceptionHandler::class.java)
         })
     }
 
@@ -45,7 +47,7 @@ class StateManagerApplication(@Value("\${brokerAddresses:localhost:9092}") val b
         return eventStream.groupByKey().aggregate({ null }, { _, event, member -> event.process(member) }, Materialized.with(null, memberSerde))
                 .apply {
                     toStream().through("MEMBER.TABLE", Produced.with(null, memberSerde))
-                            .to("MEMBER.VIEW.SEARCH", Produced.with(null, memberSerde))
+                            .to("MEMBER.VIEW.ELASTIC", Produced.with(null, memberSerde))
                 }
     }
 }
