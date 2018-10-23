@@ -8,6 +8,7 @@ import java.util.*
 data class Member(override val id: UUID? = null, val memberData: MemberData, val events: List<MemberEvent> = emptyList()) : Entity {
     fun handle(event: UpsertMemberEvent): Member {
         return copy(
+                id = event.newMemberData.id,
                 memberData = memberData.handle(event),
                 events = events + event
         )
