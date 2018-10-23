@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 @Component
-class MemberSearchService(val jestClient: JestClient, private val objectMapper: ObjectMapper) {
+class MemberSearchService(private val jestClient: JestClient, private val objectMapper: ObjectMapper) {
 
     fun getOne(id: UUID): Mono<Member> {
         return Mono.create<Member> { sink ->

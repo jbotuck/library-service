@@ -1,7 +1,7 @@
 package com.jacob.libraryservice.member.service.controller
 
 import com.jacob.libraryservice.domain.envelope.Header
-import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.envelope.MemberProfileEvent
 import com.jacob.libraryservice.domain.member.Member
 import com.jacob.libraryservice.domain.member.MemberData
 import com.jacob.libraryservice.member.service.persistor.MemberPersistor
@@ -38,12 +38,12 @@ class MemberControllerTest {
     @Test
     fun persist() {
         val memberToCreate = Member(memberData = MemberData("joe"))
-        val returned = UpsertMemberEvent(Header(UUID.randomUUID(), Instant.now()), Member(UUID.randomUUID(), MemberData("foo")))
+        val returned = MemberProfileEvent(Header(UUID.randomUUID(), Instant.now()), Member(UUID.randomUUID(), MemberData("foo")))
         given(persistor.persist(ArgumentMatchers.argThat { it?.memberData == memberToCreate.memberData }
                 ?: dummyMember)).willReturn(returned.toMono())
         client.post().uri("/member").accept(MediaType.APPLICATION_JSON_UTF8).syncBody(memberToCreate)
                 .exchange()
-                .expectBody<UpsertMemberEvent>(UpsertMemberEvent::class.java).returnResult().apply {
+                .expectBody<MemberProfileEvent>(MemberProfileEvent::class.java).returnResult().apply {
                     assertThat(this.responseBody).isEqualTo(returned)
                 }
     }

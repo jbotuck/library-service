@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jacob.libraryservice.domain.envelope.Header
-import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.envelope.MemberProfileEvent
 import com.jacob.libraryservice.domain.member.Member
 import com.jacob.libraryservice.domain.member.MemberData
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -39,9 +39,9 @@ class StateManagerApplicationNoSpringTest {
             put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde::class.java)
         })
         Assertions.assertThat(topologyTestDriver.allStateStores.size).isEqualTo(1)
-        val factory: ConsumerRecordFactory<String, UpsertMemberEvent> = ConsumerRecordFactory(StringSerializer(), JsonSerializer<UpsertMemberEvent>(objectMapper))
+        val factory: ConsumerRecordFactory<String, MemberProfileEvent> = ConsumerRecordFactory(StringSerializer(), JsonSerializer<MemberProfileEvent>(objectMapper))
         val newMemberData = Member(UUID.randomUUID(), MemberData("joe"))
-        val upsertMemberEvent = UpsertMemberEvent(Header(), newMemberData)
+        val upsertMemberEvent = MemberProfileEvent(Header(), newMemberData)
         topologyTestDriver.pipeInput(factory.create("MEMBER.EVENT", newMemberData.id.toString(), upsertMemberEvent))
         val outputRecord: ProducerRecord<String, Member> = topologyTestDriver.readOutput("MEMBER.TABLE", StringDeserializer(), JsonDeserializer<Member>(Member::class.java, objectMapper))
         OutputVerifier.compareKeyValue(outputRecord, newMemberData.id.toString(), newMemberData.copy(events = listOf(upsertMemberEvent))) // throws AssertionError if key or value does not match

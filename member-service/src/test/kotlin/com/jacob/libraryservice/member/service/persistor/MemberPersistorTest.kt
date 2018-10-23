@@ -1,6 +1,6 @@
 package com.jacob.libraryservice.member.service.persistor
 
-import com.jacob.libraryservice.domain.envelope.UpsertMemberEvent
+import com.jacob.libraryservice.domain.envelope.MemberProfileEvent
 import com.jacob.libraryservice.domain.member.Member
 import com.jacob.libraryservice.domain.member.MemberData
 import org.assertj.core.api.Assertions.assertThat
@@ -19,7 +19,7 @@ import java.util.*
 @RunWith(MockitoJUnitRunner::class)
 class MemberPersistorTest {
     @Mock
-    lateinit var kafkaTemplate: KafkaTemplate<UUID, UpsertMemberEvent>
+    lateinit var kafkaTemplate: KafkaTemplate<UUID, MemberProfileEvent>
     @InjectMocks
     lateinit var memberPersistor: MemberPersistor
 
