@@ -1,6 +1,6 @@
 # Book Library
 
-I've spent most of 2018 working with kafka and kafka stream during my day job.
+I've spent most of 2018 working with kafka and kafka streams during my day job.
 This project is my playground for seeing what's possible with ktables.
 
 I use kafka as the source of truth for all data,
